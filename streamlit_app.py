@@ -51,8 +51,8 @@ def label_data(df, holding_period, buy_threshold, sell_threshold):
 
     # Create future close column and ensure alignment
     future_close = df["Close"].shift(-holding_period)
-    df["Future_Return"] = ((future_close - df["Close"]) / df["Close"]).astype(float)
-
+    df["Future_Return"] = ((future_close.squeeze() - df["Close"]) / df["Close"]).astype(float)
+    
     # Drop rows with NaNs to avoid index misalignment
     df = df.dropna(subset=["Future_Return"])
 
