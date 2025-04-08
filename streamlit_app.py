@@ -62,7 +62,7 @@ def label_data(df, holding_period, buy_threshold, sell_threshold):
     df.loc[conditions[0], "Signal"] = choices[0]
     df.loc[conditions[1], "Signal"] = choices[1]
 
-    return df.drop(columns=["Future_Close", "Future_Return"])
+    return df.drop(columns=["Future_Close", "Future_Return"], errors='ignore')
 
 # Apply labeling
 data = label_data(data, holding_period, buy_threshold, sell_threshold)
