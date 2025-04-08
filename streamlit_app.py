@@ -50,8 +50,8 @@ def label_data(df, holding_period, buy_threshold, sell_threshold):
     df = df.copy()
     df["Future_Close"] = df["Close"].shift(-holding_period)
     future_return = (df["Future_Close"] - df["Close"]) / df["Close"]
-    df["Future_Return"] = future_return.values
-    
+    df["Future_Return"] = future_return
+
     conditions = [
         df["Future_Return"] >= buy_threshold / 100,
         df["Future_Return"] <= -sell_threshold / 100
