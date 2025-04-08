@@ -45,9 +45,29 @@ data["MACD"] = macd.macd_diff()
 data["MACD_line"] = macd.macd()
 data["MACD_signal"] = macd.macd_signal()
 
+# ✅ Label data
+data = label_data(data, holding_period, buy_threshold, sell_threshold)
+
 # Show data table (optional)
 if st.checkbox("Show raw data"):
     st.dataframe(data.tail(20))
+
+def label_data(df, holding_period, buy_threshold, sell_threshold):
+    df = df.copy()
+    df["Future_Close"] = df["Close"].shift(-holding_period)
+    df["Future_Return"] = (df["Future_Close"] - df["Close"]) / df["Close"]
+
+    conditions = [
+        df["Future_Return"] >= buy_threshold / 100,
+        df["Future_Return"] <= -sell_threshold / 100
+    ]
+    choices = [1, -1]  # BUY, SELL
+
+    df["Signal"] = pd.Series(0, index=df.index)  # default: HOLD
+    df.loc[conditions[0], "Signal"] = choices[0]
+    df.loc[conditions[1], "Signal"] = choices[1]
+
+    return df
 
 # Plotting
 st.subheader(f"{crypto} Price and Indicators")
