@@ -48,21 +48,20 @@ data["MACD_signal"] = macd.macd_signal()
 # Labeling function
 def label_data(df, holding_period, buy_threshold, sell_threshold):
     df = df.copy()
+
+    # Create future close column and ensure alignment
     df["Future_Close"] = df["Close"].shift(-holding_period)
-    future_return = (df["Future_Close"] - df["Close"]) / df["Close"]
-    df["Future_Return"] = future_return
+    df["Future_Return"] = (df["Future_Close"] - df["Close"]) / df["Close"]
 
-    conditions = [
-        df["Future_Return"] >= buy_threshold / 100,
-        df["Future_Return"] <= -sell_threshold / 100
-    ]
-    choices = [1, -1]  # BUY, SELL
+    # Drop rows with NaNs to avoid index misalignment
+    df = df.dropna(subset=["Future_Return"])
 
-    df["Signal"] = 0  # default: HOLD
-    df.loc[conditions[0], "Signal"] = choices[0]
-    df.loc[conditions[1], "Signal"] = choices[1]
+    # Initialize signal column
+    df["Signal"] = 0
+    df.loc[df["Future_Return"] >= buy_threshold / 100, "Signal"] = 1
+    df.loc[df["Future_Return"] <= -sell_threshold / 100, "Signal"] = -1
 
-    return df.drop(columns=["Future_Close", "Future_Return"], errors='ignore')
+    return df
 
 # Apply labeling
 data = label_data(data, holding_period, buy_threshold, sell_threshold)
