@@ -78,6 +78,14 @@ ax.set_ylabel("Price (USD)")
 ax.set_xlabel("Date")
 ax.legend()
 ax.grid()
+
+# Add BUY/SELL markers
+buy_signals = data[data["Signal"] == 1]
+sell_signals = data[data["Signal"] == -1]
+
+ax.scatter(buy_signals.index, buy_signals["Close"], label="BUY", marker="^", color="green", s=100)
+ax.scatter(sell_signals.index, sell_signals["Close"], label="SELL", marker="v", color="red", s=100)
+ax.legend()
 st.pyplot(fig)
 
 # RSI Plot
