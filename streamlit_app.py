@@ -53,14 +53,21 @@ def add_indicators(data, sma_period, rsi_period, macd_fast, macd_slow, macd_sign
 # Function to label data
 def label_data(df, holding_period, buy_threshold, sell_threshold):
     df = df.copy()
-    close = df["Close"]
-    future_close = close.shift(-holding_period)
-    future_return = (future_close - close) / close
-    df["Future_Return"] = future_return
-    df.dropna(subset=["Future_Return"], inplace=True)
+
+    # Create future close column and ensure alignment
+    df["Future_Close"] = df["Close"].shift(-holding_period)
+
+    # Calculate future return and ensure it's a Series
+    df["Future_Return"] = (df["Future_Close"] - df["Close"]) / df["Close"]
+
+    # Drop rows with NaNs to avoid index misalignment
+    df = df.dropna(subset=["Future_Return"])
+
+    # Initialize signal column
     df["Signal"] = 0
     df.loc[df["Future_Return"] >= buy_threshold / 100, "Signal"] = 1
     df.loc[df["Future_Return"] <= -sell_threshold / 100, "Signal"] = -1
+
     return df
 
 # Download historical data
