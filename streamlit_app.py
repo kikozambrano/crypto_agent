@@ -45,6 +45,7 @@ data["MACD"] = macd.macd_diff()
 data["MACD_line"] = macd.macd()
 data["MACD_signal"] = macd.macd_signal()
 
+# Labeling function
 def label_data(df, holding_period, buy_threshold, sell_threshold):
     df = df.copy()
     df["Future_Close"] = df["Close"].shift(-holding_period)
@@ -62,27 +63,25 @@ def label_data(df, holding_period, buy_threshold, sell_threshold):
 
     return df
 
-# ✅ Label data
+# Apply labeling
 data = label_data(data, holding_period, buy_threshold, sell_threshold)
 
-# Show data table (optional)
+# Optional: show raw data
 if st.checkbox("Show raw data"):
     st.dataframe(data.tail(20))
 
-# Plotting
+# Price Chart with Indicators + Signals
 st.subheader(f"{crypto} Price and Indicators")
 fig, ax = plt.subplots(figsize=(12, 6))
 ax.plot(data.index, data["Close"], label="Close Price", color='blue')
 ax.plot(data.index, data["SMA"], label=f"SMA {sma_period}", color='black')
 ax.set_ylabel("Price (USD)")
 ax.set_xlabel("Date")
-ax.legend()
 ax.grid()
 
 # Add BUY/SELL markers
 buy_signals = data[data["Signal"] == 1]
 sell_signals = data[data["Signal"] == -1]
-
 ax.scatter(buy_signals.index, buy_signals["Close"], label="BUY", marker="^", color="green", s=100)
 ax.scatter(sell_signals.index, sell_signals["Close"], label="SELL", marker="v", color="red", s=100)
 ax.legend()
@@ -111,5 +110,5 @@ ax_macd.legend()
 ax_macd.grid()
 st.pyplot(fig_macd)
 
-# Download labeled data (future step)
+# Download labeled data (optional future step)
 # st.download_button("Download CSV", data.to_csv(index=True), "crypto_data.csv")
