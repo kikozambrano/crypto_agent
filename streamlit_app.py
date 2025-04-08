@@ -45,13 +45,6 @@ data["MACD"] = macd.macd_diff()
 data["MACD_line"] = macd.macd()
 data["MACD_signal"] = macd.macd_signal()
 
-# ✅ Label data
-data = label_data(data, holding_period, buy_threshold, sell_threshold)
-
-# Show data table (optional)
-if st.checkbox("Show raw data"):
-    st.dataframe(data.tail(20))
-
 def label_data(df, holding_period, buy_threshold, sell_threshold):
     df = df.copy()
     df["Future_Close"] = df["Close"].shift(-holding_period)
@@ -68,6 +61,13 @@ def label_data(df, holding_period, buy_threshold, sell_threshold):
     df.loc[conditions[1], "Signal"] = choices[1]
 
     return df
+
+# ✅ Label data
+data = label_data(data, holding_period, buy_threshold, sell_threshold)
+
+# Show data table (optional)
+if st.checkbox("Show raw data"):
+    st.dataframe(data.tail(20))
 
 # Plotting
 st.subheader(f"{crypto} Price and Indicators")
@@ -86,6 +86,7 @@ sell_signals = data[data["Signal"] == -1]
 ax.scatter(buy_signals.index, buy_signals["Close"], label="BUY", marker="^", color="green", s=100)
 ax.scatter(sell_signals.index, sell_signals["Close"], label="SELL", marker="v", color="red", s=100)
 ax.legend()
+
 st.pyplot(fig)
 
 # RSI Plot
