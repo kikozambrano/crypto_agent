@@ -56,9 +56,11 @@ def label_data(df, holding_period, buy_threshold, sell_threshold):
 
     # Create future close column and ensure alignment
     df["Future_Close"] = df["Close"].shift(-holding_period)
+    st.write("Future_Close calculated:", df["Future_Close"].head())
 
     # Calculate future return and ensure it's a Series
     df["Future_Return"] = (df["Future_Close"] - df["Close"]) / df["Close"]
+    st.write("Future_Return calculated:", df["Future_Return"].head())
 
     # Drop rows with NaNs to avoid index misalignment
     df = df.dropna(subset=["Future_Return"])
@@ -77,7 +79,9 @@ data = download_data(crypto, start_date)
 data = add_indicators(data, sma_period, rsi_period, macd_fast, macd_slow, macd_signal)
 
 # Apply labeling
+st.write("Data before labeling:", data.head())
 data = label_data(data, holding_period, buy_threshold, sell_threshold)
+st.write("Data after labeling:", data.head())
 
 # Optional: show raw data
 if st.checkbox("Show raw data"):
