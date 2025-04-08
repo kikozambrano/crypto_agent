@@ -19,6 +19,13 @@ macd_fast = st.sidebar.slider("MACD Fast", 5, 20, 12)
 macd_slow = st.sidebar.slider("MACD Slow", 20, 50, 26)
 macd_signal = st.sidebar.slider("MACD Signal", 5, 20, 9)
 
+st.sidebar.markdown("---")
+st.sidebar.subheader("Labeling Parameters")
+
+holding_period = st.sidebar.slider("Holding Period (Days)", 1, 30, 5)
+buy_threshold = st.sidebar.slider("Price Increase for BUY (%)", 1, 20, 5)
+sell_threshold = st.sidebar.slider("Price Drop for SELL (%)", 1, 20, 5)
+
 # Download historical data
 data = yf.download(crypto, start=start_date, interval="1d")
 
