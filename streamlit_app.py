@@ -35,8 +35,6 @@ if data.empty:
 
 # Add indicators
 close = data["Close"]
-if isinstance(close, pd.DataFrame):
-    close = close.squeeze()
 
 data["SMA"] = ta.trend.sma_indicator(close, window=sma_period)
 data["RSI"] = ta.momentum.rsi(close, window=rsi_period)
@@ -50,9 +48,9 @@ def label_data(df, holding_period, buy_threshold, sell_threshold):
     df = df.copy()
 
     # Create future close column and ensure alignment
-    future_close = df["Close"].shift(-holding_period)
-    df["Future_Return"] = ((future_close.squeeze() - df["Close"]) / df["Close"]).astype(float)
-    
+    df["Future_Close"] = df["Close"].shift(-holding_period)
+    df["Future_Return"] = ((df["Future_Close"] - df["Close"]) / df["Close"]).astype(float)
+
     # Drop rows with NaNs to avoid index misalignment
     df = df.dropna(subset=["Future_Return"])
 
