@@ -53,7 +53,7 @@ def label_data(df, holding_period, buy_threshold, sell_threshold):
     df["Future_Return"] = future_return  # Directly assign the series
     
     # Drop rows with NaNs to avoid index misalignment
-    df = df.dropna(subset=["Future_Return"])
+    df.dropna(subset=["Future_Return"], inplace=True)
 
     # Initialize signal column
     df["Signal"] = 0
